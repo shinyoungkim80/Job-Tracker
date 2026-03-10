@@ -35,24 +35,23 @@ export async function registerRoutes(
     const body = req.body;
     const updates: Record<string, unknown> = {};
 
-    if (body.companyName !== undefined) updates.companyName = body.companyName;
-    if (body.roleTitle !== undefined) updates.roleTitle = body.roleTitle;
-    if (body.jobUrl !== undefined) updates.jobUrl = body.jobUrl;
-    if (body.notes !== undefined) updates.notes = body.notes;
-
-    if (body.status !== undefined) {
-      if (!STATUSES.includes(body.status)) {
-        return res.status(400).json({ message: `Status must be one of: ${STATUSES.join(", ")}` });
-      }
-      updates.status = body.status;
+    const merged = { ...existing, ...req.body };
+    const parsed = insertProspectSchema.safeParse(merged);
+    if (!parsed.success) {
+      return res.status(400).json({ message: parsed.error.errors.map((e) => e.message).join(", ") });
     }
 
+    if (body.companyName !== undefined) updates.companyName = parsed.data.companyName;
+    if (body.roleTitle !== undefined) updates.roleTitle = parsed.data.roleTitle;
+    if (body.jobUrl !== undefined) updates.jobUrl = parsed.data.jobUrl;
+    if (body.notes !== undefined) updates.notes = parsed.data.notes;
+    if (body.salaryCurrency !== undefined) updates.salaryCurrency = parsed.data.salaryCurrency;
+    if (body.salaryAmount !== undefined) updates.salaryAmount = parsed.data.salaryAmount;
+
+    if (body.status !== undefined) updates.status = parsed.data.status;
+
     if (body.interestLevel !== undefined || body.interest_level !== undefined) {
-      const level = body.interestLevel ?? body.interest_level;
-      if (!INTEREST_LEVELS.includes(level)) {
-        return res.status(400).json({ message: `Interest level must be one of: ${INTEREST_LEVELS.join(", ")}` });
-      }
-      updates.interestLevel = level;
+      updates.interestLevel = parsed.data.interestLevel;
     }
 
     const updated = await storage.updateProspect(id, updates);
