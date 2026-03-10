@@ -42,6 +42,8 @@ export function EditProspectForm({ prospect, onSuccess }: EditProspectFormProps)
       status: prospect.status as InsertProspect["status"],
       interestLevel: prospect.interestLevel as InsertProspect["interestLevel"],
       notes: prospect.notes ?? "",
+      salaryCurrency: prospect.salaryCurrency ?? "",
+      salaryAmount: prospect.salaryAmount ?? null,
     },
   });
 
@@ -155,6 +157,50 @@ export function EditProspectForm({ prospect, onSuccess }: EditProspectFormProps)
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="salaryCurrency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency (optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="e.g. USD"
+                    {...field}
+                    value={field.value ?? ""}
+                    data-testid="input-edit-salary-currency"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="salaryAmount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Salary (optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="e.g. 120000"
+                    data-testid="input-edit-salary-amount"
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      field.onChange(val === "" ? null : Math.round(Number(val)));
+                    }}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
