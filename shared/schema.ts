@@ -14,6 +14,8 @@ export const STATUSES = [
 
 export const INTEREST_LEVELS = ["High", "Medium", "Low"] as const;
 
+export const WORK_ARRANGEMENTS = ["Remote", "Hybrid", "Onsite"] as const;
+
 export const prospects = pgTable("prospects", {
   id: serial("id").primaryKey(),
   companyName: text("company_name").notNull(),
@@ -22,6 +24,7 @@ export const prospects = pgTable("prospects", {
   status: text("status").notNull().default("Bookmarked"),
   interestLevel: text("interest_level").notNull().default("Medium"),
   notes: text("notes"),
+  workArrangement: text("work_arrangement"),
   salaryCurrency: text("salary_currency"),
   salaryAmount: integer("salary_amount"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -37,6 +40,7 @@ export const insertProspectSchema = createInsertSchema(prospects).omit({
   interestLevel: z.enum(INTEREST_LEVELS).default("Medium"),
   jobUrl: z.string().optional().nullable(),
   notes: z.string().optional().nullable(),
+  workArrangement: z.enum(WORK_ARRANGEMENTS).optional().nullable(),
   salaryCurrency: z.string().optional().nullable(),
   salaryAmount: z.number().int().min(0, "Salary must be a positive number").optional().nullable(),
 });

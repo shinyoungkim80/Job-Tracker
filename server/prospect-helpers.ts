@@ -1,4 +1,4 @@
-import { STATUSES, INTEREST_LEVELS } from "@shared/schema";
+import { STATUSES, INTEREST_LEVELS, WORK_ARRANGEMENTS } from "@shared/schema";
 
 export function getNextStatus(currentStatus: string): string {
   const terminalStatuses = ["Offer", "Rejected", "Withdrawn"];
@@ -36,6 +36,12 @@ export function validateProspect(data: Record<string, unknown>): { valid: boolea
   if (data.interestLevel !== undefined) {
     if (!INTEREST_LEVELS.includes(data.interestLevel as (typeof INTEREST_LEVELS)[number])) {
       errors.push(`Interest level must be one of: ${INTEREST_LEVELS.join(", ")}`);
+    }
+  }
+
+  if (data.workArrangement !== undefined && data.workArrangement !== null) {
+    if (!WORK_ARRANGEMENTS.includes(data.workArrangement as (typeof WORK_ARRANGEMENTS)[number])) {
+      errors.push(`Work arrangement must be one of: ${WORK_ARRANGEMENTS.join(", ")}`);
     }
   }
 
