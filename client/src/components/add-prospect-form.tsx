@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertProspectSchema, STATUSES, INTEREST_LEVELS } from "@shared/schema";
+import { insertProspectSchema, STATUSES, INTEREST_LEVELS, WORK_ARRANGEMENTS } from "@shared/schema";
 import type { InsertProspect } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -36,6 +36,7 @@ export function AddProspectForm({ onSuccess }: { onSuccess?: () => void }) {
       jobUrl: "",
       status: "Bookmarked",
       interestLevel: "Medium",
+      workArrangement: null,
       notes: "",
       salaryCurrency: "",
       salaryAmount: null,
@@ -158,6 +159,32 @@ export function AddProspectForm({ onSuccess }: { onSuccess?: () => void }) {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="workArrangement"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Work Arrangement (optional)</FormLabel>
+              <Select onValueChange={(val) => field.onChange(val === "none" ? null : val)} value={field.value ?? "none"}>
+                <FormControl>
+                  <SelectTrigger data-testid="select-work-arrangement">
+                    <SelectValue placeholder="Select arrangement" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none" data-testid="option-arrangement-none">None</SelectItem>
+                  {WORK_ARRANGEMENTS.map((arr) => (
+                    <SelectItem key={arr} value={arr} data-testid={`option-arrangement-${arr}`}>
+                      {arr}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="grid grid-cols-2 gap-4">
           <FormField

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertProspectSchema, STATUSES, INTEREST_LEVELS } from "@shared/schema";
+import { insertProspectSchema, STATUSES, INTEREST_LEVELS, WORK_ARRANGEMENTS } from "@shared/schema";
 import type { InsertProspect, Prospect } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -41,6 +41,7 @@ export function EditProspectForm({ prospect, onSuccess }: EditProspectFormProps)
       jobUrl: prospect.jobUrl ?? "",
       status: prospect.status as InsertProspect["status"],
       interestLevel: prospect.interestLevel as InsertProspect["interestLevel"],
+      workArrangement: (prospect.workArrangement as InsertProspect["workArrangement"]) ?? null,
       notes: prospect.notes ?? "",
       salaryCurrency: prospect.salaryCurrency ?? "",
       salaryAmount: prospect.salaryAmount ?? null,
@@ -162,6 +163,32 @@ export function EditProspectForm({ prospect, onSuccess }: EditProspectFormProps)
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="workArrangement"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Work Arrangement (optional)</FormLabel>
+              <Select onValueChange={(val) => field.onChange(val === "none" ? null : val)} value={field.value ?? "none"}>
+                <FormControl>
+                  <SelectTrigger data-testid="select-edit-work-arrangement">
+                    <SelectValue placeholder="Select arrangement" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none" data-testid="option-edit-arrangement-none">None</SelectItem>
+                  {WORK_ARRANGEMENTS.map((arr) => (
+                    <SelectItem key={arr} value={arr} data-testid={`option-edit-arrangement-${arr}`}>
+                      {arr}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="grid grid-cols-2 gap-4">
           <FormField

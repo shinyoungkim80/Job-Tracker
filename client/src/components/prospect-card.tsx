@@ -38,6 +38,32 @@ function InterestIndicator({ level }: { level: string }) {
   }
 }
 
+function WorkArrangementIndicator({ arrangement }: { arrangement: string | null }) {
+  if (!arrangement) return null;
+  switch (arrangement) {
+    case "Remote":
+      return (
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-500 dark:text-blue-400" data-testid="arrangement-remote">
+          🏠 Remote
+        </span>
+      );
+    case "Hybrid":
+      return (
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-purple-500 dark:text-purple-400" data-testid="arrangement-hybrid">
+          🔀 Hybrid
+        </span>
+      );
+    case "Onsite":
+      return (
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-500 dark:text-orange-400" data-testid="arrangement-onsite">
+          🏢 Onsite
+        </span>
+      );
+    default:
+      return null;
+  }
+}
+
 export function ProspectCard({ prospect }: { prospect: Prospect }) {
   const { toast } = useToast();
   const [editOpen, setEditOpen] = useState(false);
@@ -102,6 +128,7 @@ export function ProspectCard({ prospect }: { prospect: Prospect }) {
 
         <div className="flex items-center gap-1.5 flex-wrap">
           <InterestIndicator level={prospect.interestLevel} />
+          <WorkArrangementIndicator arrangement={prospect.workArrangement} />
         </div>
 
         {prospect.salaryAmount != null && (

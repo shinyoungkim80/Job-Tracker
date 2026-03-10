@@ -153,3 +153,78 @@ describe("salary input validation", () => {
     expect(result.valid).toBe(true);
   });
 });
+
+describe("work arrangement validation", () => {
+  test("accepts Remote work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: "Remote",
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("accepts Hybrid work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: "Hybrid",
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("accepts Onsite work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: "Onsite",
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("accepts null work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: null,
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("accepts undefined work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("rejects invalid work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: "PartTime",
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Work arrangement must be one of: Remote, Hybrid, Onsite");
+  });
+
+  test("accepts valid prospect with all fields including work arrangement", () => {
+    const result = validateProspect({
+      companyName: "Google",
+      roleTitle: "Software Engineer",
+      workArrangement: "Remote",
+      salaryAmount: 150000,
+      salaryCurrency: "USD",
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+});
